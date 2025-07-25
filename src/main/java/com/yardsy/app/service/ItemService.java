@@ -25,9 +25,9 @@ public class ItemService implements IItemService{
     ModelMapper modelMapper;
 
     @Override
-    public ItemResponseDto createItem(ItemRequestDto itemRequestDto) {
-        User user = userRepository.findById(itemRequestDto.getUserId())
-                .orElseThrow(()-> new ResourceNotFoundException("User", "ID", itemRequestDto.getUserId()));
+    public ItemResponseDto createItem(Long userId, ItemRequestDto itemRequestDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new ResourceNotFoundException("User", "ID", userId));
 
         Item item = modelMapper.map(itemRequestDto, Item.class);
         item.setUser(user);
@@ -55,12 +55,12 @@ public class ItemService implements IItemService{
     }
 
     @Override
-    public ItemResponseDto updateItem(Long itemId, ItemRequestDto itemRequestDto) {
+    public ItemResponseDto updateItem(Long userId, Long itemId, ItemRequestDto itemRequestDto) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ResourceNotFoundException("item", "id", itemId));
-        userRepository.findById(itemRequestDto.getUserId())
-                .orElseThrow(()-> new ResourceNotFoundException("User", "ID", itemRequestDto.getUserId()));
+        userRepository.findById(userId)
+                .orElseThrow(()-> new ResourceNotFoundException("User", "ID", userId));
 
-        if (item.getUser().getId() != itemRequestDto.getUserId()) {
+        if (item.getUser().getId() != userId) {
             throw new RuntimeException("The yard sale was created by someone else. Cant update.");
         }
 

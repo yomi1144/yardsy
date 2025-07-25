@@ -20,9 +20,6 @@ import java.util.UUID;
 @Builder
 public class YardSaleRequestDto {
 
-    @NotNull
-    private Long userId;
-
     @NotBlank
     private String title;
 

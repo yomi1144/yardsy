@@ -30,9 +30,9 @@ public class YardSaleService implements IYardSaleService{
     ModelMapper modelMapper;
 
     @Override
-    public YardSaleResponseDto createYardSale(YardSaleRequestDto yardSaleRequestDto) {
-        User user = userRepository.findById(yardSaleRequestDto.getUserId())
-                .orElseThrow(()-> new ResourceNotFoundException("User", "ID", yardSaleRequestDto.getUserId()));
+    public YardSaleResponseDto createYardSale(Long userId, YardSaleRequestDto yardSaleRequestDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new ResourceNotFoundException("User", "ID", userId));
 
         YardSale yardSale = modelMapper.map(yardSaleRequestDto, YardSale.class);
         yardSale.setUser(user);
@@ -70,12 +70,12 @@ public class YardSaleService implements IYardSaleService{
     }
 
     @Override
-    public YardSaleResponseDto updateYardSale(Long yardSaleId, YardSaleRequestDto yardSaleRequestDto) {
+    public YardSaleResponseDto updateYardSale(Long userId, Long yardSaleId, YardSaleRequestDto yardSaleRequestDto) {
         YardSale yardSale = yardSaleRepository.findById(yardSaleId).orElseThrow(() -> new ResourceNotFoundException("YardSale", "id", yardSaleId));
-        userRepository.findById(yardSaleRequestDto.getUserId())
-                .orElseThrow(()-> new ResourceNotFoundException("User", "ID", yardSaleRequestDto.getUserId()));
+        userRepository.findById(userId)
+                .orElseThrow(()-> new ResourceNotFoundException("User", "ID", userId));
 
-        if (yardSale.getUser().getId() != yardSaleRequestDto.getUserId()) {
+        if (yardSale.getUser().getId() != userId) {
             throw new RuntimeException("The yard sale was created by someone else. Cant update.");
         }
 

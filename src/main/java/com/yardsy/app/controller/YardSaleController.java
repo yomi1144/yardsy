@@ -3,6 +3,7 @@ package com.yardsy.app.controller;
 import com.yardsy.app.dto.YardSaleRequestDto;
 import com.yardsy.app.dto.YardSaleResponseDto;
 import com.yardsy.app.service.IYardSaleService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,9 @@ public class YardSaleController {
     IYardSaleService yardSaleService;
 
     @PostMapping
-    public ResponseEntity<YardSaleResponseDto> createYardSale(@Valid @RequestBody YardSaleRequestDto yardSaleRequestDto) {
-        YardSaleResponseDto responseDto = yardSaleService.createYardSale(yardSaleRequestDto);
+    public ResponseEntity<YardSaleResponseDto> createYardSale(HttpServletRequest request, @Valid @RequestBody YardSaleRequestDto yardSaleRequestDto) {
+        Long userId = (Long) request.getAttribute("userId");
+        YardSaleResponseDto responseDto = yardSaleService.createYardSale(userId, yardSaleRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
@@ -47,25 +49,29 @@ public class YardSaleController {
     }
 
     @PutMapping("/{yardSaleId}")
-    public ResponseEntity<YardSaleResponseDto> updateYardSale(@PathVariable Long yardSaleId, @Valid @RequestBody YardSaleRequestDto yardSaleRequestDto) {
-        YardSaleResponseDto updatedYardSale = yardSaleService.updateYardSale(yardSaleId, yardSaleRequestDto);
+    public ResponseEntity<YardSaleResponseDto> updateYardSale(HttpServletRequest request, @PathVariable Long yardSaleId, @Valid @RequestBody YardSaleRequestDto yardSaleRequestDto) {
+        Long userId = (Long) request.getAttribute("userId");
+        YardSaleResponseDto updatedYardSale = yardSaleService.updateYardSale(userId, yardSaleId, yardSaleRequestDto);
         return ResponseEntity.accepted().body(updatedYardSale);
     }
 
     @DeleteMapping("/{yardSaleId}")
-    public ResponseEntity<Void> deleteYardSale(@RequestParam Long userId, @PathVariable Long yardSaleId) {
+    public ResponseEntity<Void> deleteYardSale(HttpServletRequest request, @PathVariable Long yardSaleId) {
+        Long userId = (Long) request.getAttribute("userId");
         yardSaleService.deleteYardSale(userId, yardSaleId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{yardSaleId}/items/{itemId}")
-    public ResponseEntity<YardSaleResponseDto> addItemToYardSale(@RequestParam Long userId, @PathVariable Long yardSaleId, @PathVariable Long itemId) {
+    public ResponseEntity<YardSaleResponseDto> addItemToYardSale(HttpServletRequest request, @PathVariable Long yardSaleId, @PathVariable Long itemId) {
+        Long userId = (Long) request.getAttribute("userId");
         YardSaleResponseDto updatedYardSale = yardSaleService.addItemToYardSale(userId, yardSaleId, itemId);
         return ResponseEntity.ok(updatedYardSale);
     }
 
     @DeleteMapping("/{yardSaleId}/items/{itemId}")
-    public ResponseEntity<YardSaleResponseDto> removeItemFromYardSale(@RequestParam Long userId, @PathVariable Long yardSaleId, @PathVariable Long itemId) {
+    public ResponseEntity<YardSaleResponseDto> removeItemFromYardSale(HttpServletRequest request, @PathVariable Long yardSaleId, @PathVariable Long itemId) {
+        Long userId = (Long) request.getAttribute("userId");
         YardSaleResponseDto updatedYardSale = yardSaleService.removeItemFromYardSale(userId, yardSaleId, itemId);
         return ResponseEntity.ok(updatedYardSale);
     }

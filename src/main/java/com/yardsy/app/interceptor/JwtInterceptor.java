@@ -32,6 +32,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             return false;
         }
 
+        request.setAttribute("userId", jwtService.getUserId(token));
         return true;
 
     }

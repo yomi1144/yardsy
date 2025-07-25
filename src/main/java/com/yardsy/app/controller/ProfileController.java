@@ -3,6 +3,7 @@ package com.yardsy.app.controller;
 import com.yardsy.app.dto.ProfileRequestDto;
 import com.yardsy.app.dto.ProfileResponseDto;
 import com.yardsy.app.service.IProfileService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,8 @@ public class ProfileController {
     private IProfileService profileService;
 
     @PostMapping
-    public ResponseEntity<ProfileResponseDto> createProfile(@PathVariable Long userId, @Valid @RequestBody ProfileRequestDto profileRequestDto) {
+    public ResponseEntity<ProfileResponseDto> createProfile(HttpServletRequest request, @Valid @RequestBody ProfileRequestDto profileRequestDto) {
+        Long userId = (Long) request.getAttribute("userId");
         ProfileResponseDto profileResponseDto = profileService.createProfile(userId, profileRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(profileResponseDto);
     }
@@ -30,7 +32,8 @@ public class ProfileController {
     }
 
     @PutMapping
-    public ResponseEntity<ProfileResponseDto> updateProfile(@PathVariable Long userId, @Valid @RequestBody ProfileRequestDto profileRequestDto) {
+    public ResponseEntity<ProfileResponseDto> updateProfile(HttpServletRequest request, @Valid @RequestBody ProfileRequestDto profileRequestDto) {
+        Long userId = (Long) request.getAttribute("userId");
         ProfileResponseDto profileResponseDto = profileService.updateProfile(userId, profileRequestDto);
 
         return ResponseEntity.accepted().body(profileResponseDto);

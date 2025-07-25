@@ -18,9 +18,6 @@ import java.util.UUID;
 @Builder
 public class ItemRequestDto {
 
-    @NotNull
-    private Long userId;
-
     @NotBlank
     private String name;
 
